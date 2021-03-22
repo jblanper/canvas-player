@@ -1,0 +1,56 @@
+body {
+    margin: 0;
+    font-family: monospace;
+}
+#renderer {
+    margin: 15px auto;
+}
+canvas {
+    display: block;
+    margin: 5px auto;
+    background-color: #ccc;          
+}
+.ui > * {
+    display: inline-block; 
+}
+select {
+    border: 3px solid #777;
+    padding: 7px;
+    margin: 15px 15px 0 0;
+}
+button {
+    background-color: transparent;
+    border: 3px solid #777;
+    padding: 8px;
+    margin: 15px 15px 0 0;
+    width: 70px;
+    color: #777;
+    cursor: pointer;
+    font-weight: bold;
+}
+button:hover,
+button:focus {
+    color: #fff;
+    background-color: #000;
+    border-color: #000;
+}
+.toggle {
+    color: #81a275;
+    border-color: #81a275;
+}
+.toggle:hover,
+.toggle:focus {
+    color: #fff;
+    background-color: #81a275;
+    border-color: #81a275;
+}
+.deactivated {
+    color: #b14552;
+    border-color: #b14552;
+}
+.deactivated:hover,
+.deactivated:focus {
+    color: #fff;
+    background-color: #b14552;
+    border-color: #b14552;
+}
