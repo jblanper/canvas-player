@@ -7,15 +7,17 @@ import { icons } from './lib/icons.js';
 import { savePng } from './lib/helper.js';
 
 async function loadShaders () {
+    let glslFiles = {};
+
     const loadTxt = (url) => fetch(url).then(res => res.text()).then(text => {
         const shaderName = url.match(/\/(.+)\./)[1];
-        return [shaderName,  text];
+        glslFiles[shaderName] = text;
     });
     const urls = [
         'glsl/watergalaxy_color.glsl',
         'glsl/crypto_gold1.glsl',
     ];
-    const glslFiles = await Promise.all(urls.map(loadTxt));
+    await Promise.all(urls.map(loadTxt));
 
     return glslFiles;
 }
@@ -30,6 +32,7 @@ function renderCanvas(canvas, fragmentShader, pixelation) {
 }
 
 async function main () {
+    const CANVAS_WIDTH = 500;
     const data = await loadShaders()
     const glslData = data;
 
@@ -40,22 +43,38 @@ async function main () {
         type: 'range', max: 64,
         min: 1, step: 1, value: 1
     });
-    const glslSelect = h('select', null, Array.from(glslData, x => h('option', { value: x[0] }, [ `${x[0]}` ])));
+    const glslSelect = h('select', null, Array.from(Object.keys(glslData), x => h('option', { value: x }, [ `${x}` ])));
+    const ratioSelect = h('select.vtop', null, Array.from([['1:1', 1], ['4:3', 1.33], ['16:9', 1.77]], x => h('option', { value: x[1] }, [ `${x[0]}` ])));
     const loadingText = h('span.loading', null, [ 'Loading...' ]);
     const divRenderer = h('div#renderer', null, [ 
         glslSelect, loadingText,
         canvas, 
-        h('div.ui', null, [ toggleButton, saveButton, resSlider ])    
+        h('div.ui', null, [ resSlider, toggleButton, saveButton, ratioSelect ])    
     ]);
     append2body(divRenderer)
 
     window.setTimeout(_ => {
-        let [ renderer, animation ] = renderCanvas(canvas, glslData[0][1], resSlider.valueAsNumber);
+        let [ renderer, animation ] = renderCanvas(canvas, Object.values(glslData)[0], resSlider.valueAsNumber);
+
+        const redrawCanvas = (shaderName, callback = null) => {
+            loadingText.classList.remove('hidden');
+            
+            window.setTimeout(_ => {
+                animation.stop();
+                if (callback) callback();
+                [ renderer, animation ] = renderCanvas(canvas, glslData[shaderName], resSlider.valueAsNumber);
+                loadingText.classList.add('hidden');
+            }, 50);
+        }
+
+        // Event listeners
 
         toggleButton.addEventListener('click', function(event) {
             this.classList.toggle('deactivated');
             animation.toggle();
             this.innerHTML = animation.animating ? icons.pause : icons.play;
+            ratioSelect.disabled = animation.animating;
+            glslSelect.disabled = animation.animating;
         });
 
         saveButton.addEventListener('click', function(event) {
@@ -67,16 +86,13 @@ async function main () {
             renderer.render();
         });
 
-        glslSelect.addEventListener('change', function(event) {
-            loadingText.classList.remove('hidden');
-            const shaderSelected = this.value;
+        ratioSelect.addEventListener('change', function(event) {
+            canvas.height = CANVAS_WIDTH / this.value;
+            redrawCanvas(glslSelect.value);
+        });
 
-            window.setTimeout(_ => {
-                animation.stop();
-                const shader = glslData.filter(shader => shader[0] == shaderSelected)[0];
-                [ renderer, animation ] = renderCanvas(canvas, shader[1], resSlider.valueAsNumber);
-                loadingText.classList.add('hidden');
-            }, 50);
+        glslSelect.addEventListener('change', function(event) {
+            redrawCanvas(this.value);
         })
 
         loadingText.classList.add('hidden');

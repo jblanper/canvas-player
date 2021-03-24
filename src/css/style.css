@@ -6,6 +6,9 @@ body {
     margin: 15px auto;
     width: 500px;
 }
+*:disabled {
+    cursor: not-allowed;
+}
 canvas {
     display: block;
     margin: 5px auto;
@@ -16,14 +19,14 @@ canvas {
 }
 select {
     border: 3px solid #777;
-    padding: 7px;
-    margin: 15px 15px 0 0;
+    padding: 9px;
+    margin: 0 15px 5px 0;
 }
 button {
     background-color: transparent;
     border: 3px solid #777;
     padding: 6px 9px;
-    margin: 15px 15px 0 0;
+    margin: 0 15px 0 0;
     width: 40px;
     color: #777;
     cursor: pointer;
@@ -33,12 +36,6 @@ button:focus {
     color: #fff;
     background-color: #000;
     border-color: #000;
-}
-input[type="range"].pixelation {
-    /* width: 300px;
-    background-color: #777;
-    margin: -4px 0;
-    padding: 0 5px; */
 }
 .toggle {
     color: #81a275;
@@ -62,4 +59,7 @@ input[type="range"].pixelation {
 }
 .hidden {
     display: none;
+}
+.vtop {
+    vertical-align: top;
 }
