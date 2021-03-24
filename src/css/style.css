@@ -4,6 +4,7 @@ body {
 }
 #renderer {
     margin: 15px auto;
+    width: 500px;
 }
 canvas {
     display: block;
@@ -21,18 +22,23 @@ select {
 button {
     background-color: transparent;
     border: 3px solid #777;
-    padding: 8px;
+    padding: 6px 9px;
     margin: 15px 15px 0 0;
-    width: 70px;
+    width: 40px;
     color: #777;
     cursor: pointer;
-    font-weight: bold;
 }
 button:hover,
 button:focus {
     color: #fff;
     background-color: #000;
     border-color: #000;
+}
+input[type="range"].pixelation {
+    /* width: 300px;
+    background-color: #777;
+    margin: -4px 0;
+    padding: 0 5px; */
 }
 .toggle {
     color: #81a275;
@@ -53,4 +59,7 @@ button:focus {
     color: #fff;
     background-color: #b14552;
     border-color: #b14552;
+}
+.hidden {
+    display: none;
 }

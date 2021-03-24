@@ -2,6 +2,10 @@ export function append2body (elem) {
     document.body.appendChild(elem);
 }
 
+export function remove (elem) {
+    elem.parentNode.removeChild(elem);
+}
+
 export function html (selector, attributes = null, children = null) {
     const tag = selector.split(/#|\./)[0];
     
@@ -41,7 +45,14 @@ function addAttributes (elem, attributes) {
 function addChildren (elem, children) {
     children.forEach(child => {
         if (typeof child == 'string') {
-            child = document.createTextNode(child);
+            if (child.startsWith('<')) {
+                const stringElem = child;
+                const template = document.createElement('template');
+                template.innerHTML = stringElem;
+                child = template.content;
+            } else {
+                child = document.createTextNode(child);
+            }
         } 
         elem.appendChild(child);
     });

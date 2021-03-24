@@ -20,7 +20,10 @@ export default function createGlRenderer(canvas, fragmentShader, pixelation = 1.
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
     
-    const renderer = new THREE.WebGLRenderer({ canvas });
+    const renderer = new THREE.WebGLRenderer({ 
+        canvas ,
+        preserveDrawingBuffer: true
+    });
 
     uniforms.resolution.value.set(
         renderer.domElement.clientWidth, 
@@ -33,7 +36,7 @@ export default function createGlRenderer(canvas, fragmentShader, pixelation = 1.
         renderer.render(scene, camera);
     }
 
-    return { render, uniforms };
+    return { render, uniforms, domElement: renderer.domElement };
 }
 
 function resizeRendererToDisplaySize(renderer) {
