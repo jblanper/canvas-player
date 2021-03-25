@@ -1,41 +1,100 @@
 body {
     margin: 0;
     font-family: monospace;
+    background-color: #000;
+    color: #fff;
 }
-#renderer {
-    margin: 15px auto;
-    width: 500px;
+#canvas-player {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 2em;
+}
+#canvas-player > div {
+    margin: 0 50px;
+}
+.title {
+    font-weight: 100;
+    margin: 0;
+    text-align: right;
+    width: 100%;
+}
+.code-panel {
+    width: 475px;
+    padding: 15px;
+    border: 1px solid #8a8a8a;
+    overflow: auto;
+    height: 90vh;
+    background-color: #0f0b0f;
+    color: #fff;
+}
+.code-panel pre {
+    white-space: pre-wrap;
+}
+.renderer {
+    width: 400px;
 }
 *:disabled {
     cursor: not-allowed;
+    background-color: #333;
+    color: #ccc;
+    border-color: #ccc;
 }
 canvas {
     display: block;
     margin: 5px auto;
-    background-color: #ccc;          
+    background-color: #ccc;   
+    border: 1px solid #333;       
 }
-.ui > * {
-    display: inline-block; 
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+.col {
+    width: 45%;
+    margin: 5px 0;
+}
+.buttons {
+    display: flex;
+    align-items: flex-end;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
 }
 select {
-    border: 3px solid #777;
-    padding: 9px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    width: 100%;
+    padding: 9px 9px 9px 3px;
     margin: 0 15px 5px 0;
+    background-color: #000;
+    color: #fff;
+    font-family: inherit;
+    appearance: none;
+    background: url('data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M7 10l5 5 5-5z" fill="white"/></svg>') 100% 50% no-repeat #000;
+}
+select:focus {
+    outline: 1px dotted #bbb;
+}
+input[type="range"].pixelation {
+    margin: 20px 0;
+    width: 100%;
 }
 button {
     background-color: transparent;
-    border: 3px solid #777;
+    border: 3px solid #fff;
     padding: 6px 9px;
     margin: 0 15px 0 0;
     width: 40px;
-    color: #777;
+    color: #fff;
     cursor: pointer;
 }
 button:hover,
 button:focus {
-    color: #fff;
-    background-color: #000;
-    border-color: #000;
+    color: #000;
+    background-color: #fff;
+    border-color: #fff;
 }
 .toggle {
     color: #81a275;
@@ -60,6 +119,6 @@ button:focus {
 .hidden {
     display: none;
 }
-.vtop {
-    vertical-align: top;
+.w100 {
+    width: 100%;
 }
