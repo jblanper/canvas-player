@@ -1,12 +1,12 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     mode: "production",
-    entry: "./index.js",
+    entry: "./src/index.js",
     output: {
         filename: `[name].[hash].js`,
         path: path.resolve(__dirname, "dist")
@@ -39,8 +39,8 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'Canvas Player',
         }),
-        new CleanWebpackPlugin(["dist"], {
-            root: __dirname
+        new CleanWebpackPlugin({
+            cleanAfterEveryBuildPatterns: ['dist']
         }),
         new MiniCssExtractPlugin({
             filename: "[name].[contenthash].css"
