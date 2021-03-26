@@ -32,7 +32,7 @@ function renderCanvas(canvas, fragmentShader, pixelation) {
 }
 
 async function main () {
-    const CANVAS_WIDTH = 400;
+    const CANVAS_WIDTH = (window.innerWidth < 450) ? window.innerWidth - 40 : 400;
     const data = await loadShaders()
     const glslData = data;
     let currentGlslCode = Object.values(glslData)[0];
@@ -48,16 +48,16 @@ async function main () {
     });
     const glslSelect = h('select', null, Array.from(Object.keys(glslData), x => h('option', { value: x }, [ `${x}` ])));
     const ratioSelect = h('select', null, Array.from([['1:1', 1], ['4:3', 1.33], ['16:9', 1.77]], x => h('option', { value: x[1] }, [ `${x[0]}` ])));
-    const loadingText = h('span.loading', null, [ 'Loading...' ]);
+    const loadingText = h('span.loading.hidden', null, [ 'Loading...' ]);
     const codePanel =  h('pre', null, [ currentGlslCode ]);
     const canvasPlayer = h('div#canvas-player', null, [
         h('div.renderer', null, [ 
             h('div.row', null, [
-                h('div.col.buttons', null, [ toggleButton, stepButton, saveButton, loadingText ]) ,
+                h('div.col.buttons', null, [ toggleButton, stepButton, saveButton ]) ,
                 h('div.col.buttons', null, [ h('h1.title', null, [ "Grab my ART" ]) ]) ,
             ]),
-            h('div.row', null, [
-                canvas, 
+            h('div.row.canvas-container', null, [
+                canvas, loadingText
             ]),
             h('div.row', null, [ 
                 h('div.col', null, [ h('label', null, [ 'Shader: ' ]), glslSelect ]),
@@ -65,8 +65,16 @@ async function main () {
             ]),
             h('div.row', null, [ 
                 h('div.col.w100', null, [ h('label', null, [ 'Pixelation: ' ]), resSlider ]),
-                // h('label.w100', null, [ 'Pixelation: ' ]),
-                // resSlider
+            ]),
+            h('div.row', null, [ 
+                h('div.w100.signature', null, [ 
+                    'by',
+                    icons.signature,
+                    '·',
+                    h('a', { href: 'https://twitter.com/blancoperales', target: '_blanck' }, [ 'Twitter' ]),
+                    '·',
+                    h('a', { href: 'https://github.com/jblanper', target: '_blanck' }, [ 'Github' ]) ,
+                ]),
             ]),
         ]),
         h('div.code-panel', null, [
@@ -122,8 +130,6 @@ async function main () {
             redrawCanvas(this.value);
             codePanel.innerHTML = currentGlslCode;
         })
-
-        loadingText.classList.add('hidden');
     }, 10)
 }
 

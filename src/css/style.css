@@ -6,7 +6,6 @@ body {
 }
 #canvas-player {
     display: flex;
-    flex-direction: row;
     justify-content: center;
     margin-top: 2em;
 }
@@ -40,11 +39,22 @@ body {
     color: #ccc;
     border-color: #ccc;
 }
+.canvas-container {
+    position: relative;
+}
 canvas {
     display: block;
     margin: 5px auto;
     background-color: #ccc;   
     border: 1px solid #333;       
+}
+.loading {
+    position: absolute;
+    top: 6px;
+    left: 1px;
+    background: #000;
+    padding: 10px 20px;
+    font-size: 14px;
 }
 .row {
     display: flex;
@@ -57,6 +67,12 @@ canvas {
 .buttons {
     display: flex;
     align-items: flex-end;
+}
+a {
+    color: #fff;
+}
+a:hover, a:focus {
+    color: #b14552;
 }
 label {
     display: block;
@@ -116,9 +132,51 @@ button:focus {
     background-color: #b14552;
     border-color: #b14552;
 }
+.signature {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+.signature > * {
+    margin: 0 10px;
+}
+.signature svg {
+    width: 45px;
+    display: inline;
+}
 .hidden {
     display: none;
 }
 .w100 {
     width: 100%;
+}
+/* media queries */
+@media (max-width: 500px) {
+    #canvas-player {
+        display: block;
+    }
+    #canvas-player .renderer {
+        margin: 0;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    #canvas-player .code-panel {
+        height: auto;
+        margin: 10px 20px;
+        width: unset;
+    }
+    .renderer > div, .code-panel > div {
+        margin: 0 20px;
+    }
+    .code-panel pre {
+        white-space: pre;
+        overflow-x: auto;
+    }
+    h1.title {
+        font-size: 20px;
+    }
+    button {
+        padding: 4px 7px;
+    }
 }
