@@ -77,6 +77,11 @@ async function main () {
                     h('a', { href: 'https://github.com/jblanper', target: '_blanck' }, [ 'Github' ]) ,
                 ]),
             ]),
+            h('div.row', null, [ 
+                h('div.w100.disclaimer', null, [ 
+                    h('small', null , [ '* Better view on Desktop devices'])
+                ]),
+            ]),
         ]),
         h('div.code-panel', null, [
             codePanel
