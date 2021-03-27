@@ -145,6 +145,11 @@ button:focus {
     width: 45px;
     display: inline;
 }
+.disclaimer {
+    text-align: right;
+    margin-right: 10px;
+    margin-top: 8px;
+}
 .hidden {
     display: none;
 }
@@ -269,4 +274,4 @@ how to remove the virtical space around the range input in IE*/
 }
 
 
-/*# sourceMappingURL=main.c3493e501b9b8cdffaaf.css.map*/
+/*# sourceMappingURL=main.6a7e1b57e23a08bd7a5f.css.map*/
