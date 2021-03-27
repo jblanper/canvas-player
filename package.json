@@ -4,10 +4,10 @@
   "description": "",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack serve --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
-    "deploy": "git subtree push --prefix dist origin gh-pages"
+    "deploy": "git subtree push --prefix dist origin gh-pages",
+    "transform-glsl": "node ./glsl/transformGlsl.js"
   },
   "keywords": [],
   "author": "",
@@ -31,8 +31,5 @@
     "@babel/runtime": "^7.13.10",
     "three": "^0.126.1",
     "twgl.js": "^4.19.1"
-  },
-  "bin": {
-    "transform-glsl": "./transformGlsl.js"
   }
 }

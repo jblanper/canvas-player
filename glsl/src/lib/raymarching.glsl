@@ -12,7 +12,7 @@ vec2 trace (vec3 ro, vec3 rd) {
 
 vec3 getNormal (vec3 p) {
     float d = map(p).x;
-    vec2 e = vec2(.0001, 0.);
+    vec2 e = vec2(EX, 0.);
 
     return normalize(d - vec3(
         map(p - e.xyy).x,
@@ -46,7 +46,7 @@ float getLight (vec3 lightPos, vec3 p, vec3 rd, float lightOcclusion, Material m
     vec3 light = normalize(lightPos - p);
     vec3 normal = getNormal(p);
 
-    float shadow = getShadow(p, light);
+    float shadow = getShadow(p, light) * .9;
 
     // phong reflection
     float ambient = clamp(.5 + .5 * normal.y, 0., 1.);

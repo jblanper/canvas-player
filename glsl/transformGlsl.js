@@ -3,8 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const SRC_PATH = './glsl/src';
-const DIST_PATH = './glsl/dist';
+const SRC_PATH = path.join(__dirname, 'src');
+const DIST_PATH = path.join(__dirname, 'dist');
 
 function applyToAllFiles(callback) {
     fs.readdirSync(SRC_PATH).forEach(file => {

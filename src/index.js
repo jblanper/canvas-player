@@ -16,6 +16,7 @@ async function loadShaders () {
     const urls = [
         'glsl/watergalaxy_color.glsl',
         'glsl/crypto_gold1.glsl',
+        'glsl/marea2.glsl',
     ];
     await Promise.all(urls.map(loadTxt));
 

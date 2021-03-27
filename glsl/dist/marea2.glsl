@@ -3,63 +3,61 @@ uniform float time;
 uniform vec2 resolution;
 uniform float pixelation;
 
-#define MAX_DEPTH 30.
-#define MIN_DEPTH .001
-#define MARCHING_STEPS 50
-#define SHADOW_STEPS 8
-#define OCTAVES 5
-#define EX .0001
+#define MAX_DEPTH 50.
+#define MIN_DEPTH .001 // .0001
+#define MARCHING_STEPS 100 //150
+#define SHADOW_STEPS 25 //32
+#define OCTAVES 4
+#define EX .01
 
 float tt;
 
-float hash11(float p) {
-    p = fract(p * .1031);
-    p *= p + 33.33;
-    p *= p + p;
-    return fract(p);
+float hash11 (in float n) {
+  //htimeps://thebookofshaders.com/11/
+  return fract(sin(n)*1e4);
 }
 
-float hash21(vec2 p) {
-	vec3 p3  = fract(vec3(p.xyx) * .1031);
-    p3 += dot(p3, p3.yzx + 33.33);
-    return fract((p3.x + p3.y) * p3.z);
+float hash21 (in vec2 st) {
+    // https://thebookofshaders.com/13/
+    return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
 }
 
-vec2 hash22(vec2 p) {
-	vec3 p3 = fract(vec3(p.xyx) * vec3(.1031, .1030, .0973));
-    p3 += dot(p3, p3.yzx+33.33);
-    return fract((p3.xx+p3.yz)*p3.zy);
+float noise11 (float x) {
+  // htimeps://thebookofshaders.com/11/
+  float i = floor(x);
+  float f = fract(x);
+  return mix(hash11(i), hash11(i+1.), smoothstep(0., 1., f));
 }
 
-float noise11(float x) {
-    // https://thebookofshaders.com/11/
-    float i = floor(x);
-    float f = fract(x);
-    return mix(hash11(i), hash11(i+1.), smoothstep(0., 1., f));
+float noise21 (in vec2 st) {
+    // https://www.shadertoy.com/view/4dS3Wd
+    vec2 i = floor(st);
+    vec2 f = fract(st);
+
+    // Four corners in 2D of a tile
+    float a = hash21(i);
+    float b = hash21(i + vec2(1.0, 0.0));
+    float c = hash21(i + vec2(0.0, 1.0));
+    float d = hash21(i + vec2(1.0, 1.0));
+
+    vec2 u = f * f * (3.0 - 2.0 * f);
+
+    return mix(a, b, u.x) +
+            (c - a)* u.y * (1.0 - u.x) +
+            (d - b) * u.x * u.y;
 }
 
-float noise21(vec2 p) {
-    // value noise https://www.shadertoy.com/view/lsf3WH
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    vec2 u = smoothstep(0., 1., f);
+float loopingNoise (vec2 uv, float loopLength, float transitionStart) {
+  // http://connorbell.ca/2017/09/09/Generating-Looping-Noise.html
+  float delta = mod(time, loopLength);
 
-    return mix(
-        mix(hash21(i + vec2(0.)), hash21(i + vec2(1., 0.)), u.x),
-        mix(hash21(i + vec2(0., 1.)), hash21(i + vec2(1.)), u.x), u.y);
-}
+  float v1 = noise21(uv + delta);
+  float v2 = noise21(uv + delta - loopLength);
 
-float loopingNoise(vec2 uv, float loopLength, float transitionStart) {
-    // http://connorbell.ca/2017/09/09/Generating-Looping-Noise.html
-    float delta = mod(time, loopLength);
+  float transitionProgress = (delta-transitionStart)/(loopLength-transitionStart);
+  float progress = clamp(transitionProgress, 0., 1.);
 
-    float v1 = noise21(uv + delta);
-    float v2 = noise21(uv + delta - loopLength);
-
-    float transitionProgress = (delta-transitionStart)/(loopLength-transitionStart);
-    float progress = clamp(transitionProgress, 0., 1.);
-
-    return mix(v1, v2, progress);
+  return mix(v1, v2, progress);
 }
 
 float complexFbm(vec2 p, float lacunarity, float gain) {
@@ -109,13 +107,13 @@ float cubeSDF (vec3 p, vec3 c, vec3 dimensions, float borderRoundness) {
 }
 
 vec2 map (vec3 p) {
-    p.xy *= rotate(complexFbm(p.xy, noise11(tt * 1.2), noise21(p.yx + tt)));
-    float c1 = p.z;
-    float f = complexFbm(p.xy, 2.5 * noise11(tt), .8 * noise11(p.x - p.y - tt)) * 2.5;
+  // sea
+  float c = p.y;
+  c += simpleFbm(p.xz) * simpleFbm(vec2(simpleFbm(p.xz + tt - 5.), tt / 3.)) * 5.;
+  c += noise11(p.y - simpleFbm(p.xz * tt)) * noise11(tt + p.y) * 3. + (tt * .2);
+  vec2 t = vec2(c * .2, 1.);
 
-    vec2 t = vec2(c1 + f * .3, 1.);
-
-    return t / 3.;
+  return t / 2.;
 }
 
 vec2 trace (vec3 ro, vec3 rd) {
@@ -205,39 +203,40 @@ vec2 pixelate(vec2 st) {
 }
 
 void main() {
-    vec2 uv = (gl_FragCoord.xy / resolution.xy) * 2.0 - 1.0;
-    uv.x *= resolution.x / resolution.y;
-    uv = pixelate(uv);
+  vec2 uv = (gl_FragCoord.xy / resolution.xy) * 2.0 - 1.0;
+  uv.x *= resolution.x / resolution.y;
+  uv = pixelate(uv);
 
-    tt = loopingNoise(uv, 3., 2.);
+  tt = loopingNoise(uv, 3., 2.);
 
-    // camera
-    vec3 ro = vec3(0., 0. + (sin(tt) * .5 - .5) * 15., 15. + sin(tt) * .5 + .5);
-    vec3 rd = getRayDirection(uv, ro, vec3(0.), 2.);
+  // camera
+  vec3 ro = vec3(0., 5., 9.);
+  vec3 rd = getRayDirection(uv, ro, vec3(0.), 3.);
 
-    // color, fog and light direction
-    vec3 ld1 = vec3(5., 12., 35.);
-    vec3 ld2 = vec3(0., 4., 5.);
-    vec3 fogColor = vec3(.8, .4, .2) * .1;
-    vec3 fog = fogColor * (.5 + (length(uv) - .2));
-    vec3 color = fog;
+  // color, fog and light direction
+  vec3 ld1 = vec3(0., 8., 10.);
+  vec3 fogColor = vec3(.8, .4, .2);
+  vec3 fog = fogColor * (5. + (length(uv) + .1));
+  vec3 color = fog;
 
-    // scene
-    vec2 sc = trace(ro, rd);
-    float t = sc.x;
+  // scene
+  vec2 sc = trace(ro, rd);
+  float t = sc.x;
 
-    if (t > 0.) {
-        vec3 p = ro + rd * t;
-        vec3 normal = getNormal(p);
-        vec3 albido = vec3(.5);
-
-        color = getLight(ld1, p, rd, 2.5, Material(.2, .6, 2.2)) * vec3(.7, .5, .2);
-        color *= getLight(ld2, p, rd, 1.2, Material(.3, .8, 1.7)) * vec3(.7, .5, .2);
-        color *= albido; 
-
-
-        color = mix(color, fog, 1. - exp(-.00005*t*t*t)); //gradient
+  if (t > 0.) {
+    vec3 p = ro + rd * t;
+    vec3 normal = getNormal(p);
+    vec3 albido = vec3(.3 + (tt * .2) + p.z * .1, .2 + (tt * .1) - (p.x * .05), .8 + tt) + p.y * .4;
+    if (sc.y == 2.) {
+      albido = vec3(.4, .4, .5) + p.y;
     }
 
-    gl_FragColor = vec4(pow(color, vec3(.45)), 1.);
+    color = getLight(ld1, p, rd, 1.5, Material(0., .5, .2)) * vec3(.2, .3, .6);
+    color += mix(color, vec3(.8, .6, .2) , getLight(ld1, p, rd, 1., Material(0., .6, .2))) * tt;
+    color -= mix(color, albido, .8) * 1.;
+
+    color = mix(color, fog, 1. - exp(-.00002*t*t*t)); //gradient
+  }
+
+  gl_FragColor = vec4(pow(color, vec3(.45)), 1.);
 }

@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 uniform float time;
 uniform vec2 resolution;
 uniform float pixelation;
@@ -8,19 +8,20 @@ uniform float pixelation;
 #define MARCHING_STEPS 50
 #define SHADOW_STEPS 8
 #define OCTAVES 5
+#define EX .0001
 
 float tt;
 
-#include <lib/noise.glsl>
+#include <lib/noise1.glsl>
 
 #include <lib/fbm.glsl>
 
 #include <lib/3d_utils.glsl>
 
 vec2 map (vec3 p) {
-    p.xy *= rotate(fbm(p.xy, noise11(tt * 1.2), noise21(p.yx + tt)));
+    p.xy *= rotate(complexFbm(p.xy, noise11(tt * 1.2), noise21(p.yx + tt)));
     float c1 = p.z;
-    float f = fbm(p.xy, 2.5 * noise11(tt), .8 * noise11(p.x - p.y - tt)) * 2.5;
+    float f = complexFbm(p.xy, 2.5 * noise11(tt), .8 * noise11(p.x - p.y - tt)) * 2.5;
 
     vec2 t = vec2(c1 + f * .3, 1.);
 

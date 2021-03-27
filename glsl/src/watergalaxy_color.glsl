@@ -1,9 +1,9 @@
-precision mediump float;
+precision highp float;
 uniform float time;
 uniform vec2 resolution;
 uniform float pixelation;
 
-#include <lib/noise.glsl>
+#include <lib/noise1.glsl>
 
 #include <lib/pixelate.glsl>
 
