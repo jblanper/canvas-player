@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 uniform float time;
 uniform vec2 resolution;
 uniform float pixelation;
@@ -23,10 +23,10 @@ vec2 hash22(vec2 p) {
 }
 
 float noise11(float x) {
-  // https://thebookofshaders.com/11/
-  float i = floor(x);
-  float f = fract(x);
-  return mix(hash11(i), hash11(i+1.), smoothstep(0., 1., f));
+    // https://thebookofshaders.com/11/
+    float i = floor(x);
+    float f = fract(x);
+    return mix(hash11(i), hash11(i+1.), smoothstep(0., 1., f));
 }
 
 float noise21(vec2 p) {
