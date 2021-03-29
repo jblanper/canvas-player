@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
+const TransformGlslPlugin = require('./transform-glsl-plugin');
 
 module.exports = {
     mode: 'development',
@@ -9,10 +9,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'Canvas Player',
         }),
-        new CopyPlugin({
-            patterns: [
-                { from: 'glsl/dist/', to: 'glsl' }
-            ]
+        new TransformGlslPlugin({
+            srcPath: path.resolve(__dirname, 'glsl/src'),
+            distPath: path.resolve(__dirname, 'glsl/dist')
         })
     ],
     output: {

@@ -73,7 +73,7 @@ vec2 pixelate(vec2 st) {
 void main() {
   vec2 uv = (gl_FragCoord.xy - .5 * resolution.xy) / resolution.y;
   
-  uv = pixelate(uv);
+  uv = pixelate(uv); 
 
   vec3 color = vec3(0);
 
